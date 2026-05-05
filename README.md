@@ -65,3 +65,77 @@ If you wish to contribute, please take a quick look at the [CONTRIBUTING.md](htt
 If there's anything you'd like to chat about, please feel free to join our [Discord](https://discord.gg/cJXdrwS) chat!
 
 _Chatwoot_ &copy; 2017-2025, Chatwoot Inc - Released under the MIT License.
+
+---
+
+## CI/CD — Magica Chat (white-label)
+
+### Workflows
+
+| Workflow | Trigger | Jobs |
+|---|---|---|
+| `eas-build-android.yml` | PR para `main` | lint + build preview APK |
+| `eas-build-android.yml` | push para `main` | build production AAB |
+| `eas-build-ios.yml` | push para `main` | build production IPA |
+
+### Build Profiles
+
+| Profile | Platform | Distribuicao | Uso |
+|---|---|---|---|
+| `preview` | Android | Internal (APK) | Testes em PRs |
+| `production` | Android + iOS | Store (AAB/IPA) | Release |
+| `development` | Android + iOS | Internal | Dev client local |
+
+### Configurar secrets no GitHub
+
+Va em **Settings > Secrets and variables > Actions** no repositorio e adicione:
+
+| Secret | Descricao | Como obter |
+|---|---|---|
+| `EXPO_TOKEN` | Token de autenticacao EAS | `npx expo login` → `~/.expo/state.json` ou [expo.dev/accounts](https://expo.dev/accounts) > Access Tokens |
+| `GOOGLE_SERVICES_JSON` | `google-services.json` em base64 | `base64 -w 0 google-services.json` |
+| `GOOGLE_SERVICES_PLIST` | `GoogleService-Info.plist` em base64 | `base64 -w 0 GoogleService-Info.plist` |
+| `EXPO_APPLE_ID` | Apple ID (email) para autenticacao | Ex: `developer@conexaoazul.com` |
+| `EXPO_APPLE_TEAM_ID` | Team ID da Apple Developer | [developer.apple.com](https://developer.apple.com/account) > Membership |
+
+Codificar arquivos Firebase em base64 (Linux/macOS):
+
+```bash
+# Android
+base64 -w 0 google-services.json | pbcopy
+
+# iOS
+base64 -w 0 GoogleService-Info.plist | pbcopy
+```
+
+No Windows (PowerShell):
+
+```powershell
+# Android
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("google-services.json")) | Set-Clipboard
+
+# iOS
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("GoogleService-Info.plist")) | Set-Clipboard
+```
+
+### Como fazer um release
+
+1. Desenvolva na branch `develop`
+2. Abra um PR de `develop` para `main`
+   - O workflow dispara `lint` + `build-preview` (APK para testes)
+3. Aprove e mergue o PR
+   - O workflow dispara `build-production` (Android AAB + iOS IPA via EAS)
+4. Acompanhe os builds em [expo.dev/accounts/conexao-azul/projects/magica-chat](https://expo.dev/accounts/conexao-azul/projects/magica-chat)
+5. Submeta para as stores quando o build EAS estiver pronto:
+   ```bash
+   pnpm submit:android   # Google Play (track: internal)
+   pnpm submit:ios       # App Store Connect
+   ```
+
+### EAS Project
+
+- **Conta:** `conexao-azul`
+- **Projeto:** `magica-chat`
+- **Project ID:** `2a9ff588-2989-4260-b49a-0ddc8c493ab1`
+- **Bundle ID Android:** `com.conexaoazul.magicachat`
+- **Bundle ID iOS:** `com.conexaoazul.magicachat`
