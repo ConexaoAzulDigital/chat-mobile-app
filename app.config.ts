@@ -1,5 +1,7 @@
 import { ConfigContext, ExpoConfig } from 'expo/config';
 
+const noFirebase = process.env.EXPO_NO_FIREBASE === 'true';
+
 export default ({ config }: ConfigContext): ExpoConfig => {
   return {
     name: 'Magica Chat',
@@ -84,8 +86,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           organization: process.env.EXPO_PUBLIC_SENTRY_ORG_NAME,
         },
       ],
-      '@react-native-firebase/app',
-      '@react-native-firebase/messaging',
+      ...(noFirebase ? [] : ['@react-native-firebase/app', '@react-native-firebase/messaging']),
       [
         'expo-build-properties',
         {
