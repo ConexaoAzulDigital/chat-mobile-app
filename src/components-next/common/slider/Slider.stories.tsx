@@ -76,7 +76,6 @@ const HalfwayProgressSlider = (args: SliderProps) => {
       currentPosition.value = 50;
     }, 100);
     return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleManualSeek = (position: number) => {

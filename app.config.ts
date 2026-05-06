@@ -76,6 +76,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     owner: 'conexao-azul',
     plugins: [
+      'expo-audio',
       'expo-font',
       ['react-native-permissions', { iosPermissions: ['Camera', 'PhotoLibrary', 'MediaLibrary'] }],
       [
@@ -97,10 +98,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             targetSdkVersion: 35,
             enableProguardInReleaseBuilds: true,
           },
-          ios: { useFrameworks: 'static' },
+          ios: {
+            useFrameworks: 'static',
+          },
         },
       ],
-      './with-ffmpeg-pod.js',
     ],
     androidNavigationBar: { backgroundColor: '#ffffff' },
   };

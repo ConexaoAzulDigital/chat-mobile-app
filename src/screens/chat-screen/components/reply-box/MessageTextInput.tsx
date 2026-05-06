@@ -40,7 +40,6 @@ type MessageTextInputProps = {
   replyEditorMode: string;
   selectedCannedResponse?: string | null;
   agents: Agent[];
-  messageContent: string;
 };
 type AgentSuggestion = Omit<Agent, 'id'> & Suggestion;
 
@@ -121,10 +120,6 @@ export const MessageTextInput = ({
     [dispatchTypingStatus],
   );
 
-  const startTyping = useCallback(() => {
-    typingIndicator.start();
-  }, [typingIndicator]);
-
   const onBlur = useCallback(() => {
     typingIndicator.stop();
   }, [typingIndicator]);
@@ -134,7 +129,7 @@ export const MessageTextInput = ({
   }, [typingIndicator]);
 
   const onChangeText = (text: string) => {
-    startTyping();
+    typingIndicator.start();
     dispatch(setMessageContent(text));
   };
 
@@ -149,13 +144,12 @@ export const MessageTextInput = ({
 
   useEffect(() => {
     if (selectedCannedResponse) onChangeText(selectedCannedResponse);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCannedResponse]);
 
   useEffect(() => {
     if (quoteMessage !== null) {
       // Focussing Text Input when you have decided to reply
-      // @ts-expect-error TextInput ref focus method may not be properly typed
+      // @ts-expect-error: Focusing text input may not be available
       textInputRef?.current?.focus();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -224,7 +218,7 @@ export const MessageTextInput = ({
         layout={LinearTransition.springify().damping(20).stiffness(120)}
         style={[tailwind.style('flex-1 my-0.5')]}>
         <MentionInput
-          // @ts-expect-error MentionInput ref typing issue with forwardRef
+          // @ts-expect-error: TextInput ref may not be available
           ref={textInputRef}
           layout={LinearTransition.springify().damping(20).stiffness(120)}
           onChange={onChangeText}

@@ -23,7 +23,7 @@ import { AuthStack, ConversationStack, SettingsStack, InboxStack } from '../stac
 import ChatScreen from '@/screens/chat-screen/ChatScreen';
 import ContactDetailsScreen from '@/screens/contact-details/ContactDetailsScreen';
 import DashboardScreen from '@/screens/dashboard/DashboardScreen';
-import SearchScreen from '@/screens/search/SearchScreen';
+import CaptainScreen from '@/screens/captain/Captain';
 
 import { selectInstallationUrl } from '@/store/settings/settingsSelectors';
 import { BottomTabBar } from './BottomTabBar';
@@ -55,13 +55,8 @@ export type TabParamList = {
 
 export type TabBarExcludedScreenParamList = {
   Tab: undefined;
-  ChatScreen: {
-    conversationId: number;
-    primaryActorId?: number;
-    primaryActorType?: string;
-    messageId?: number;
-  };
-  ContactDetails: { conversationId?: number; contactId?: number };
+  ChatScreen: { conversationId: number; primaryActorId?: number; primaryActorType?: string };
+  ContactDetails: { conversationId: number };
   ConversationActions: undefined;
   Dashboard: { url: string };
   Login: undefined;
@@ -69,6 +64,7 @@ export type TabBarExcludedScreenParamList = {
   ImageScreen: undefined;
   ConversationDetails: undefined;
   ConversationAction: undefined;
+  Captain: undefined;
 };
 const Stack = createNativeStackNavigator<TabBarExcludedScreenParamList>();
 
@@ -159,10 +155,7 @@ const Tabs = () => {
   }, []);
 
   return (
-    <Tab.Navigator tabBar={CustomTabBar} initialRouteName="Inbox">
-      {hasConversationPermission && (
-        <Tab.Screen name="Inbox" component={InboxStack} options={{ headerShown: false }} />
-      )}
+    <Tab.Navigator tabBar={CustomTabBar} initialRouteName="Conversations">
       {hasConversationPermission && (
         <Tab.Screen
           name="Conversations"
@@ -170,6 +163,10 @@ const Tabs = () => {
           component={ConversationStack}
         />
       )}
+      {hasConversationPermission && (
+        <Tab.Screen name="Inbox" component={InboxStack} options={{ headerShown: false }} />
+      )}
+
       <Tab.Screen name="Settings" options={{ headerShown: false }} component={SettingsStack} />
     </Tab.Navigator>
   );
@@ -204,9 +201,12 @@ export const AppTabs = () => {
           component={DashboardScreen}
         />
         <Stack.Screen
-          options={{ headerShown: false, animation: 'slide_from_right' }}
-          name="SearchScreen"
-          component={SearchScreen}
+          options={{
+            presentation: 'formSheet',
+            animation: 'slide_from_bottom',
+          }}
+          name="Captain"
+          component={CaptainScreen}
         />
       </Stack.Navigator>
     );

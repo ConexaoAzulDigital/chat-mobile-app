@@ -18,11 +18,6 @@ overrides:
   glob>minimatch: 9.0.7
   tar: 6.2.1
 
-patchedDependencies:
-  ffmpeg-kit-react-native@6.0.2:
-    hash: 0cc82646cedf0e8bf24e518594c46bedd028c52ac2045724f76c8dd883a7d7b1
-    path: patches/ffmpeg-kit-react-native.patch
-
 importers:
 
   .:
@@ -114,6 +109,9 @@ importers:
       expo-application:
         specifier: ~6.0.2
         version: 6.0.2(expo@52.0.46(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(react-native-webview@13.12.5(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))(react@18.3.1))(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))(react@18.3.1))
+      expo-audio:
+        specifier: ~0.3.5
+        version: 0.3.5(expo@52.0.46(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(react-native-webview@13.12.5(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))(react@18.3.1))(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))(react@18.3.1))(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))(react@18.3.1)
       expo-auth-session:
         specifier: ~6.0.3
         version: 6.0.3(expo@52.0.46(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(react-native-webview@13.12.5(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))(react@18.3.1))(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))(react@18.3.1))(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))(react@18.3.1)
@@ -150,9 +148,6 @@ importers:
       expo-web-browser:
         specifier: ~14.0.2
         version: 14.0.2(expo@52.0.46(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(react-native-webview@13.12.5(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))(react@18.3.1))(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))(react@18.3.1))(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))
-      ffmpeg-kit-react-native:
-        specifier: ^6.0.2
-        version: 6.0.2(patch_hash=0cc82646cedf0e8bf24e518594c46bedd028c52ac2045724f76c8dd883a7d7b1)(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))(react@18.3.1)
       i18n-js:
         specifier: ^3.8.0
         version: 3.9.2
@@ -4028,6 +4023,13 @@ packages:
       react: '*'
       react-native: '*'
 
+  expo-audio@0.3.5:
+    resolution: {integrity: sha512-gzpDH3vZI1FDL1Q8pXryACtNIW+idZ/zIZ8WqdTRzJuzxucazrG2gLXUS2ngcXQBn09Jyz4RUnU10Tu2N7/Hgg==}
+    peerDependencies:
+      expo: '*'
+      react: '*'
+      react-native: '*'
+
   expo-auth-session@6.0.3:
     resolution: {integrity: sha512-s7LmmMPiiY1NXrlcXkc4+09Hlfw9X1CpaQOCDkwfQEodG1uCYGQi/WImTnDzw5YDkWI79uC8F1mB8EIerilkDA==}
     peerDependencies:
@@ -4206,13 +4208,6 @@ packages:
 
   fetch-retry@4.1.1:
     resolution: {integrity: sha512-e6eB7zN6UBSwGVwrbWVH+gdLnkW9WwHhmq2YDK1Sh30pzx1onRVGBvogTlUeWxwTa+L86NYdo4hFkh7O8ZjSnA==}
-
-  ffmpeg-kit-react-native@6.0.2:
-    resolution: {integrity: sha512-r9uSmahq8TeyIb7fXf3ft+uUXyoeWRFa99+khjo0TAzWO9y0z9wU7eGnab9JLw1MmCB9v64o4yojNluJhVm9nQ==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      react: '*'
-      react-native: '*'
 
   file-entry-cache@6.0.1:
     resolution: {integrity: sha512-7Gps/XWymbLk2QLYK4NzpMOrYjMhdIxXuIvy2QBsLE6ljuodKvdkWs/cpyJJ3CVIVpH0Oi1Hvg1ovbMzLdFBBg==}
@@ -11739,6 +11734,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  expo-audio@0.3.5(expo@52.0.46(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(react-native-webview@13.12.5(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))(react@18.3.1))(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))(react@18.3.1))(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))(react@18.3.1):
+    dependencies:
+      expo: 52.0.46(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(react-native-webview@13.12.5(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))(react@18.3.1))(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))(react@18.3.1)
+      react: 18.3.1
+      react-native: 0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1)
+
   expo-auth-session@6.0.3(expo@52.0.46(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(react-native-webview@13.12.5(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))(react@18.3.1))(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))(react@18.3.1))(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))(react@18.3.1):
     dependencies:
       expo-application: 6.0.2(expo@52.0.46(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(react-native-webview@13.12.5(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))(react@18.3.1))(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))(react@18.3.1))
@@ -11951,11 +11952,6 @@ snapshots:
       picomatch: 4.0.2
 
   fetch-retry@4.1.1: {}
-
-  ffmpeg-kit-react-native@6.0.2(patch_hash=0cc82646cedf0e8bf24e518594c46bedd028c52ac2045724f76c8dd883a7d7b1)(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1))(react@18.3.1):
-    dependencies:
-      react: 18.3.1
-      react-native: 0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.27.1(@babel/core@7.27.1))(@types/react@18.3.20)(react@18.3.1)
 
   file-entry-cache@6.0.1:
     dependencies:
