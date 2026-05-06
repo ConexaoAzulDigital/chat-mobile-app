@@ -18,6 +18,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
 
+    env:
+      EXPO_PUBLIC_APP_SLUG: magica-chat
+      EXPO_PUBLIC_PROJECT_ID: 2a9ff588-2989-4260-b49a-0ddc8c493ab1
+      EXPO_PUBLIC_ANDROID_GOOGLE_SERVICES_FILE: ./google-services.json
+      EXPO_PUBLIC_CHATWOOT_BASE_URL: https://chat.conexaoazul.com
+      EXPO_NO_FIREBASE: "false"
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,10 +39,14 @@ jobs:
         with:
           version: 10.11.0
 
+      - name: Get pnpm store path
+        id: pnpm-store
+        run: echo "path=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
       - name: Cache pnpm store
         uses: actions/cache@v4
         with:
-          path: $(pnpm store path --silent)
+          path: ${{ steps.pnpm-store.outputs.path }}
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-pnpm-
 
@@ -61,18 +72,16 @@ jobs:
         run: echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 -d > google-services.json
 
       - name: Expo Prebuild (Android)
-        run: npx expo prebuild --clean --platform android
+        run: pnpm exec expo prebuild --clean --platform android --no-install
         env:
-          EXPO_PUBLIC_ANDROID_GOOGLE_SERVICES_FILE: ./google-services.json
-          EXPO_PUBLIC_APP_SLUG: magica-chat
-          EXPO_PUBLIC_PROJECT_ID: 2a9ff588-2989-4260-b49a-0ddc8c493ab1
+          EXPO_NO_GIT_STATUS: "1"
 
       # ── DEBUG BUILD ────────────────────────────────────────────────────────
       - name: Build Debug APK
         if: inputs.build_type == 'debug'
         run: cd android && ./gradlew assembleDebug --no-daemon
         env:
-          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g"
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=512m"
 
       - name: Upload Debug APK
         if: inputs.build_type == 'debug'
@@ -91,7 +100,7 @@ jobs:
         if: inputs.build_type == 'release'
         run: cd android && ./gradlew assembleRelease --no-daemon
         env:
-          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g"
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=512m"
           ANDROID_KEYSTORE_PATH: magicachat.keystore
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
