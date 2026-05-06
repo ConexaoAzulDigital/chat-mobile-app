@@ -87,9 +87,13 @@ const ForgotPassword = () => {
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
-                  placeholderTextColor={tailwind.color('text-gray-900')}
+                  placeholder={i18n.t('FORGOT_PASSWORD.EMAIL_PLACEHOLDER')}
+                  placeholderTextColor={tailwind.color('text-gray-400')}
                   keyboardType="email-address"
                   autoCapitalize="none"
+                  accessibilityLabel={i18n.t('LOGIN.EMAIL')}
+                  autoComplete="email"
+                  textContentType="emailAddress"
                 />
                 {errors.email && (
                   <Animated.Text style={tailwind.style('text-ruby-900')}>

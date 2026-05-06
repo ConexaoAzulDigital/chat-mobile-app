@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Animated, Image, Pressable, StatusBar, TextInput, View } from 'react-native';
+import {
+  Animated,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  StatusBar,
+  TextInput,
+  View,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {
   BottomSheetModal,
@@ -143,15 +152,21 @@ const LoginScreen = () => {
         barStyle={'dark-content'}
       />
       <View style={tailwind.style('flex-1 bg-white')}>
-        <Animated.ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={tailwind.style('px-6 pt-24')}>
-          <Image
-            // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
-            source={require('@/assets/images/logo.png')}
-            style={tailwind.style('w-10 h-10')}
-            resizeMode="contain"
-          />
+        <KeyboardAvoidingView
+          style={tailwind.style('flex-1')}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}>
+          <Animated.ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={tailwind.style('px-6 pt-24')}
+            keyboardShouldPersistTaps="handled">
+            <Image
+              // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+              source={require('@/assets/images/logo.png')}
+              style={tailwind.style('w-10 h-10')}
+              resizeMode="contain"
+              accessibilityLabel="Mágica Chat"
+            />
           <View style={tailwind.style('pt-6 gap-4')}>
             <Animated.Text style={tailwind.style('text-2xl text-gray-950 font-inter-semibold-20')}>
               {i18n.t('LOGIN.TITLE')}
@@ -178,7 +193,7 @@ const LoginScreen = () => {
               <View style={tailwind.style('flex-row items-center my-6')}>
                 <View style={tailwind.style('flex-1 h-px bg-gray-300')} />
                 <Animated.Text style={tailwind.style('px-4 text-sm text-gray-600')}>
-                  OR
+                  {i18n.t('LOGIN.OR')}
                 </Animated.Text>
                 <View style={tailwind.style('flex-1 h-px bg-gray-300')} />
               </View>
@@ -210,9 +225,13 @@ const LoginScreen = () => {
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
-                  placeholderTextColor={tailwind.color('text-gray-900')}
+                  placeholder={i18n.t('LOGIN.EMAIL_PLACEHOLDER')}
+                  placeholderTextColor={tailwind.color('text-gray-400')}
                   keyboardType="email-address"
                   autoCapitalize="none"
+                  accessibilityLabel={i18n.t('LOGIN.EMAIL')}
+                  autoComplete="email"
+                  textContentType="emailAddress"
                 />
                 {errors.email && (
                   <Animated.Text style={tailwind.style('font-inter-normal-20 text-ruby-900')}>
@@ -250,12 +269,18 @@ const LoginScreen = () => {
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}
-                    placeholderTextColor={tailwind.color('text-gray-500')}
+                    placeholder={i18n.t('LOGIN.PASSWORD_PLACEHOLDER')}
+                    placeholderTextColor={tailwind.color('text-gray-400')}
                     secureTextEntry={!showPassword}
+                    accessibilityLabel={i18n.t('LOGIN.PASSWORD')}
+                    autoComplete="password"
+                    textContentType="password"
                   />
                   <Pressable
                     style={tailwind.style('absolute right-4 top-2.5')}
-                    onPress={() => setShowPassword(!showPassword)}>
+                    onPress={() => setShowPassword(!showPassword)}
+                    accessibilityRole="button"
+                    accessibilityLabel={showPassword ? 'Ocultar senha' : 'Mostrar senha'}>
                     <Icon size={20} icon={showPassword ? <EyeIcon /> : <EyeSlash />} />
                   </Pressable>
                 </View>
@@ -278,6 +303,7 @@ const LoginScreen = () => {
           <Button
             text={isLoggingIn ? i18n.t('LOGIN.LOGIN_LOADING') : i18n.t('LOGIN.LOGIN')}
             handlePress={handleSubmit(onSubmit)}
+            loading={isLoggingIn}
           />
 
           <Pressable
@@ -295,6 +321,7 @@ const LoginScreen = () => {
             </Animated.Text>
           </Pressable>
         </Animated.ScrollView>
+        </KeyboardAvoidingView>
       </View>
       <BottomSheetModal
         ref={languagesModalSheetRef}

@@ -192,7 +192,7 @@ const MFAScreen = () => {
                 {/* Hidden TextInput for OTP */}
                 <TextInput
                   ref={hiddenInputRef}
-                  style={tailwind.style('opacity-0 w-1 h-1')}
+                  style={tailwind.style('absolute opacity-0 w-px h-px')}
                   value={code.join('')}
                   onChangeText={handleCodeChange}
                   maxLength={6}
@@ -200,6 +200,8 @@ const MFAScreen = () => {
                   autoCapitalize="none"
                   autoFocus
                   textContentType="oneTimeCode"
+                  accessible={false}
+                  importantForAccessibility="no"
                 />
               </>
             ) : (

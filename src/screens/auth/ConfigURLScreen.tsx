@@ -1,6 +1,13 @@
 import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Animated, StatusBar, TextInput, View } from 'react-native';
+import {
+  Animated,
+  KeyboardAvoidingView,
+  Platform,
+  StatusBar,
+  TextInput,
+  View,
+} from 'react-native';
 import * as Application from 'expo-application';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, Icon } from '@/components-next';
@@ -53,9 +60,13 @@ const ConfigURLScreen = () => {
         barStyle={'dark-content'}
       />
       <View style={tailwind.style('flex-1 bg-white')}>
-        <Animated.ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={tailwind.style('px-6 pt-16')}>
+        <KeyboardAvoidingView
+          style={tailwind.style('flex-1')}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+          <Animated.ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={tailwind.style('px-6 pt-16')}
+            keyboardShouldPersistTaps="handled">
           <Icon icon={<LinkIcon />} size={40} />
           <View style={tailwind.style('pt-6 gap-4')}>
             <Animated.Text style={tailwind.style('text-2xl text-gray-950 font-inter-semibold-20')}>
@@ -91,9 +102,11 @@ const ConfigURLScreen = () => {
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
-                  placeholderTextColor={tailwind.color('text-gray-900')}
-                  keyboardType="email-address"
+                  placeholder={i18n.t('CONFIGURE_URL.PLACEHOLDER')}
+                  placeholderTextColor={tailwind.color('text-gray-400')}
+                  keyboardType="url"
                   autoCapitalize="none"
+                  accessibilityLabel={i18n.t('CONFIGURE_URL.ENTER_URL')}
                 />
                 {errors.url && (
                   <Animated.Text style={tailwind.style('text-ruby-900')}>
@@ -107,6 +120,7 @@ const ConfigURLScreen = () => {
 
           <Button text={i18n.t('CONFIGURE_URL.CONNECT')} handlePress={handleSubmit(onSubmit)} />
         </Animated.ScrollView>
+        </KeyboardAvoidingView>
       </View>
     </SafeAreaView>
   );
