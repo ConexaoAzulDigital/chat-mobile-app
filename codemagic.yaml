@@ -1,0 +1,49 @@
+workflows:
+  android-debug:
+    name: Android Debug APK (sem EAS)
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+
+    environment:
+      node: 20.17.0
+      java: 17
+      vars:
+        EXPO_PUBLIC_APP_SLUG: magica-chat
+        EXPO_PUBLIC_PROJECT_ID: 2a9ff588-2989-4260-b49a-0ddc8c493ab1
+        EXPO_PUBLIC_ANDROID_GOOGLE_SERVICES_FILE: ./google-services.json
+        EXPO_PUBLIC_CHATWOOT_BASE_URL: https://chat.conexaoazul.com
+        EXPO_NO_FIREBASE: "false"
+
+    triggering:
+      events:
+        - manual
+
+    scripts:
+      - name: Instalar pnpm
+        script: npm install -g pnpm@10.11.0
+
+      - name: Instalar dependências
+        script: pnpm install --frozen-lockfile
+
+      - name: Decodificar google-services.json
+        script: echo "$GOOGLE_SERVICES_JSON" | base64 --decode > google-services.json
+
+      - name: Expo Prebuild (Android)
+        script: npx expo prebuild --clean --platform android
+
+      - name: Build Debug APK
+        script: |
+          cd android
+          export GRADLE_OPTS="-Dorg.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=512m"
+          ./gradlew assembleDebug --no-daemon --stacktrace
+
+    artifacts:
+      - android/app/build/outputs/apk/debug/app-debug.apk
+
+    publishing:
+      email:
+        recipients:
+          - conexaoazul.digital@gmail.com
+        notify:
+          success: true
+          failure: true
