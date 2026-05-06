@@ -11,10 +11,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EMAIL_REGEX } from '@/constants';
 import { EyeIcon, EyeSlash, LockIcon } from '@/svg-icons';
+import * as WebBrowser from 'expo-web-browser';
 import { tailwind } from '@/theme';
 import i18n from '@/i18n';
 import { resetAuth } from '@/store/auth/authSlice';
 import { authActions } from '@/store/auth/authActions';
+import { settingsActions } from '@/store/settings/settingsActions';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 
 import {
@@ -79,7 +81,7 @@ const LoginScreen = () => {
   useEffect(() => {
     dispatch(resetAuth());
     if (!installationUrl) {
-      navigation.navigate('ConfigureURL' as never);
+      dispatch(settingsActions.setInstallationUrl('chat.conexaoazul.com'));
     }
   }, [installationUrl, navigation, dispatch]);
 
@@ -109,10 +111,6 @@ const LoginScreen = () => {
 
   const openResetPassword = () => {
     navigation.navigate('ResetPassword' as never);
-  };
-
-  const openConfigInstallationURL = () => {
-    navigation.navigate('ConfigureURL' as never);
   };
 
   const onChangeLanguage = (locale: string) => {
@@ -284,9 +282,9 @@ const LoginScreen = () => {
 
           <Pressable
             style={tailwind.style('flex-row justify-center items-center mt-6')}
-            onPress={openConfigInstallationURL}>
-            <Animated.Text style={tailwind.style('text-sm text-gray-900')}>
-              {i18n.t('LOGIN.CHANGE_URL')}
+            onPress={() => WebBrowser.openBrowserAsync('https://magicachat.conexaoazul.com/app/auth/signup')}>
+            <Animated.Text style={tailwind.style('text-sm text-blue-800 font-inter-medium-24')}>
+              {i18n.t('LOGIN.CREATE_ACCOUNT')}
             </Animated.Text>
           </Pressable>
           <Pressable
