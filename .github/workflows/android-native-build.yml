@@ -129,6 +129,7 @@ jobs:
           ANDROID_KEY_ALIAS: ${{ env.KEY_ALIAS }}
           ANDROID_STORE_PASSWORD: ${{ env.STORE_PASSWORD }}
           ANDROID_KEY_PASSWORD: ${{ env.KEY_PASSWORD }}
+          SENTRY_DISABLE_AUTO_UPLOAD: true
 
       - name: Upload Release APK
         if: inputs.build_type == 'release'
