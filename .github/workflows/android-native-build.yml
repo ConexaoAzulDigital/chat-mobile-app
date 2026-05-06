@@ -91,20 +91,43 @@ jobs:
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 14
 
-      # ── RELEASE BUILD (requer secrets de keystore) ─────────────────────────
-      - name: Decode Keystore
+      # ── RELEASE BUILD (debug keystore fallback se secrets não existirem) ────
+      - name: Setup Release Keystore
         if: inputs.build_type == 'release'
-        run: echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/magicachat.keystore
+        run: |
+          if [ -n "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ]; then
+            echo "Usando keystore dos secrets..."
+            echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/magicachat.keystore
+            echo "KEYSTORE_PATH=magicachat.keystore" >> $GITHUB_ENV
+            echo "KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}" >> $GITHUB_ENV
+            echo "STORE_PASSWORD=${{ secrets.ANDROID_STORE_PASSWORD }}" >> $GITHUB_ENV
+            echo "KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}" >> $GITHUB_ENV
+          else
+            echo "Nenhum keystore configurado, gerando debug keystore..."
+            keytool -genkey -v \
+              -keystore android/app/debug.keystore \
+              -alias debug-alias \
+              -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass debugpw \
+              -keypass debugpw \
+              -dname "CN=Debug, OU=Dev, O=MagicaChat, L=SP, ST=SP, C=BR" \
+              -noprompt
+            echo "KEYSTORE_PATH=debug.keystore" >> $GITHUB_ENV
+            echo "KEY_ALIAS=debug-alias" >> $GITHUB_ENV
+            echo "STORE_PASSWORD=debugpw" >> $GITHUB_ENV
+            echo "KEY_PASSWORD=debugpw" >> $GITHUB_ENV
+            echo "⚠️ APK assinada com keystore de debug — somente para teste interno"
+          fi
 
       - name: Build Release APK
         if: inputs.build_type == 'release'
         run: cd android && ./gradlew assembleRelease --no-daemon
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=512m"
-          ANDROID_KEYSTORE_PATH: magicachat.keystore
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEYSTORE_PATH: ${{ env.KEYSTORE_PATH }}
+          ANDROID_KEY_ALIAS: ${{ env.KEY_ALIAS }}
+          ANDROID_STORE_PASSWORD: ${{ env.STORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ env.KEY_PASSWORD }}
 
       - name: Upload Release APK
         if: inputs.build_type == 'release'
