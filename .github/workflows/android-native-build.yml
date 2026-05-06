@@ -1,6 +1,9 @@
 name: Android Build (Native — sem EAS)
 
 on:
+  push:
+    branches:
+      - develop
   workflow_dispatch:
     inputs:
       build_type:
@@ -28,6 +31,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Determine build type
+        id: build-type
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "type=${{ inputs.build_type }}" >> $GITHUB_OUTPUT
+          else
+            echo "type=debug" >> $GITHUB_OUTPUT
+          fi
 
       - name: Setup Node 20
         uses: actions/setup-node@v4
@@ -78,13 +90,13 @@ jobs:
 
       # ── DEBUG BUILD ────────────────────────────────────────────────────────
       - name: Build Debug APK
-        if: inputs.build_type == 'debug'
+        if: steps.build-type.outputs.type == 'debug'
         run: cd android && ./gradlew assembleDebug --no-daemon
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=512m"
 
       - name: Upload Debug APK
-        if: inputs.build_type == 'debug'
+        if: steps.build-type.outputs.type == 'debug'
         uses: actions/upload-artifact@v4
         with:
           name: magica-chat-debug-${{ github.run_number }}
@@ -92,11 +104,8 @@ jobs:
           retention-days: 14
 
       # ── RELEASE BUILD ──────────────────────────────────────────────────────
-      # O build.gradle usa signingConfigs.debug para release
-      # (debug.keystore gerado pelo prebuild já funciona).
-      # Se houver keystore próprio nos secrets, sobrescreve a config.
       - name: Setup Release Keystore
-        if: inputs.build_type == 'release'
+        if: steps.build-type.outputs.type == 'release'
         run: |
           if [ -n "$KS" ]; then
             echo "Usando keystore dos secrets..."
@@ -106,14 +115,14 @@ jobs:
           KS: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
 
       - name: Build Release APK
-        if: inputs.build_type == 'release'
+        if: steps.build-type.outputs.type == 'release'
         run: cd android && ./gradlew assembleRelease --no-daemon
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=512m"
           SENTRY_DISABLE_AUTO_UPLOAD: true
 
       - name: Upload Release APK
-        if: inputs.build_type == 'release'
+        if: steps.build-type.outputs.type == 'release'
         uses: actions/upload-artifact@v4
         with:
           name: magica-chat-release-${{ github.run_number }}
