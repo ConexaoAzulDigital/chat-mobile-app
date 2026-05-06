@@ -6,7 +6,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   return {
     name: 'Magica Chat',
     slug: process.env.EXPO_PUBLIC_APP_SLUG || 'magica-chat',
-    version: '4.5.0',
+    version: '4.6.0',
     orientation: 'portrait',
     icon: './assets/icon.png',
     userInterfaceStyle: 'light',
